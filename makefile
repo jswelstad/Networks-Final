@@ -1,8 +1,12 @@
 PROGRAM = python3
-MAIN = client.py
+CLIENT = client.py
+SERVER = server.py
 
-run:
-	$(PROGRAM) $(MAIN)
+client:
+	$(PROGRAM) $(CLIENT)
+
+server:
+	$(PROGRAM) $(SERVER)
 
 .PHONY: clean
 clean:
