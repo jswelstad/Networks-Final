@@ -19,7 +19,7 @@ BACKGROUNDCOLOR = CYAN
 BUFF_SIZE = 1024
 MESSAGE_LEN = 10
 HOST = "127.0.0.1" #Standard loopback interface address (localhost)
-PORT = 5759
+PORT = 5234
 
 def main():
     
@@ -27,8 +27,6 @@ def main():
     
     keepRunning = True
     
-    # username = input("Please enter your username: ")
-
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect((HOST, PORT))
     s.setblocking(False)

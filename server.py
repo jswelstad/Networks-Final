@@ -4,12 +4,12 @@ from _thread import *
 import sys
 
 SERVER = "127.0.0.1" #Standard loopback interface address (localhost)
-PORT = 5759
+PORT = 5234
 BUFF_SIZE = 10
 HEADER_LENGTH = 10
 
 def main() -> None:
-        
+
     keepRunning = True
     
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s: #IPV4 and TCP
@@ -37,8 +37,6 @@ def main() -> None:
                     username = client_socket.recv(1024).decode()
                     print(f"New connecions username is: {username}")
                     clients[client_socket] = username
-                    print(f"Clients: {clients[client_socket]}")
-                    
                 else:                     #That means the notified socket is not the server socket so it is an existing client
                     data = notifiedSocket.recv(1024).decode()
                     print(data)
