@@ -1,0 +1,7 @@
+flask
+requests
+lxml
+pymongo[srv]
+vcrpy
+pyyaml
+gunicorn
