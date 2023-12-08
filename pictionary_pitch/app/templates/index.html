@@ -11,12 +11,13 @@
     
     <div id="top-content">
       <div id="clock">
+        {# get data from server #}
 
       </div> 
-      <div id="round">
+      <div id="blank-word">
 
       </div>
-      <div id="blank-word">
+      <div id="round">
 
       </div>
     </div>
@@ -29,14 +30,10 @@
 
     </div>
 
-    
-
-
-
     <script>
 
         // Get the canvas element and its context
-        var canvas = document.getElementById('drawingCanvas');
+        var canvas = document.getElementById('drawing-canvas');
         var ctx = canvas.getContext('2d');
 
         // Variables to track mouse events
