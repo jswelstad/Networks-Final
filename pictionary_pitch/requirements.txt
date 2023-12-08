@@ -1,4 +1,5 @@
 flask
+flask-socketio
 requests
 lxml
 pymongo[srv]
