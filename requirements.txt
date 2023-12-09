@@ -1,0 +1,8 @@
+flask
+flask-socketio
+requests
+lxml
+pymongo[srv]
+vcrpy
+pyyaml
+gunicorn
