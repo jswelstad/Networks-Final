@@ -39,7 +39,10 @@ def main() -> None:
                     clients[client_socket] = username
                 else:                     #That means the notified socket is not the server socket so it is an existing client
                     data = notifiedSocket.recv(1024).decode()
-                    print(data)
+                    # print(data)
+                    for k,v in clients.items():
+                        k.send(data.encode())
+                    
                     if(data == "quit"):
                         s.close()
                         keepRunning = False
