@@ -33,13 +33,16 @@ def main():
 
     username = input("Please enter your username\n")
     s.sendall(username.encode())
+    print("Enter your message")
 
     while(keepRunning):
-        print("Enter your message")
         message = input()
         s.sendall(message.encode())
         if(message == "quit"):
             keepRunning = False
+            
+        message = s.recv(1024).decode()
+        print(message)
 
 def game():
     SCREEN_WIDTH = 1000
