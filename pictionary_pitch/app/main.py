@@ -6,18 +6,16 @@ from flask_socketio import SocketIO
 app = Flask(__name__)
 socketio = SocketIO(app)
 
-
+client = []
 
 @app.route('/')
 def index():
-
     return render_template('index.html')
 
 @socketio.on("connect")
 def handle_connect(data):
     print(f"data: {data}")
-    socketio.emit('player_joined', data)
-    
+    socketio.emit('player_joined', data)   
     pass
 
 @socketio.on("disconnect")
