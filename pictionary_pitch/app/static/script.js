@@ -41,17 +41,19 @@ function draw(e) {
 }
 
 
-// automaticly adds 
+// automaticly adds new player
 socket.addEventListener('open', (event) => {
   socket.emit('connect');
 });
 
+// send drawing points back to server points
 socket.on('draw_response', function (data) {
     ctx.beginPath();
     ctx.moveTo(data.lastX, data.lastY);
     ctx.lineTo(data.x, data.y);
     ctx.stroke();
 });
+
 
 socket.on('player_joined', function (data) {
     playerList = document.getElementById("player-names");
