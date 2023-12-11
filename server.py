@@ -4,7 +4,7 @@ from _thread import *
 import sys
 
 SERVER = "127.0.0.1" #Standard loopback interface address (localhost)
-PORT = 5234
+PORT = 5235
 BUFF_SIZE = 10
 HEADER_LENGTH = 10
 
@@ -39,10 +39,8 @@ def main() -> None:
                     clients[client_socket] = username
                 else:                     #That means the notified socket is not the server socket so it is an existing client
                     data = notifiedSocket.recv(1024).decode()
-                    # print(data)
-                    for k,v in clients.items():
-                        k.send(data.encode())
-                    
+                    print("Received: ", data)
+                    notifiedSocket.sendall(data.encode())
                     if(data == "quit"):
                         s.close()
                         keepRunning = False
