@@ -19,7 +19,7 @@ BACKGROUNDCOLOR = CYAN
 BUFF_SIZE = 1024
 MESSAGE_LEN = 10
 HOST = "127.0.0.1" #Standard loopback interface address (localhost)
-PORT = 5234
+PORT = 5235
 
 def main():
     
@@ -40,9 +40,8 @@ def main():
         s.sendall(message.encode())
         if(message == "quit"):
             keepRunning = False
-            
-        message = s.recv(1024).decode()
-        print(message)
+        # message = s.recv(1024).decode()
+        print("Client received:", message)
 
 def game():
     SCREEN_WIDTH = 1000
