@@ -12,7 +12,6 @@ let isDrawing = false;
 let lastX = 0;
 let lastY = 0;
 
-
 // Event listeners for mouse events
 canvas.addEventListener('mousedown', startDrawing);
 canvas.addEventListener('mousemove', draw);
@@ -73,13 +72,13 @@ socket.on('player_joined', function (data) {
     playerList.appendChild(newplayer);
 });
 
-//Listens for a player join event and adds the new player to the player list
+//Listens for a player disconnecting from socket
 socket.on('player_left', function (data) {
-    playerList = document.getElementById("player-names");
-    let newplayer = document.createElement("p");
-    console.log(data);
-    newplayer.textContent = "user";
-    playerList.appendChild(newplayer);
+    // playerList = document.getElementById("player-names");
+    // let newplayer = document.createElement("p");
+    // console.log(data);
+    // newplayer.textContent = "user";
+    // playerList.appendChild(newplayer);
 });
 
 // document.getElementById("login-btn").addEventListener('click', ()=> {

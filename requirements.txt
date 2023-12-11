@@ -6,3 +6,4 @@ pymongo[srv]
 vcrpy
 pyyaml
 gunicorn
+pygame
