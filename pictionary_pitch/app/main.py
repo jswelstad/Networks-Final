@@ -6,21 +6,30 @@ from flask_socketio import SocketIO
 app = Flask(__name__)
 socketio = SocketIO(app)
 
-client = []
+clientCount = 0
 
 #Render the index.html file
 @app.route('/')
 def index():
+
     return render_template('index.html')
 
 #When a client connects, notify all clients that someone connected
 @socketio.on("connect")
 def handle_connect(data):
-    print(f"data: {data}")
-    socketio.emit('player_joined', data)
+    global clientCount
+    clientCount += 1
+    # valdiate username: no empty, no on room alreadyq
+    # data.get("userName")
+    
+    socketio.emit('player_joined', {"clientCount": clientCount})
 
+# Hand when a client disconnects
 @socketio.on("disconnect")
 def handle_disconnect():
+    global clientCount
+    clientCount -= 1
+    socketio.emit('player_left', )
     pass
 
 #When server recieves draw data, transmit that data to all clients

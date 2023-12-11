@@ -2,7 +2,7 @@
 Client side rendering and networking of the game
 */
 
-const socket = io("http://localhost:5555/")
+const socket = io("http://localhost:5555/")  // "http://localhost:5555/" "http://127.0.0.1:5555/"
 // Get the canvas element and its context
 let canvas = document.getElementById('drawing-canvas');
 let ctx = canvas.getContext('2d');
@@ -48,8 +48,12 @@ function draw(e) {
 
 
 // When you connect, send your connect data to server so it can display it to the other clients
-socket.addEventListener('open', (event) => {
-  socket.emit('connect');
+socket.addEventListener('open', () => {
+    socket.emit('connect');
+});
+
+socket.addEventListener('close', () => {
+    socket.emit('disconnect');
 });
 
 //Listens for a draw event from server and draws the received drawing data on the canvas
@@ -65,11 +69,28 @@ socket.on('player_joined', function (data) {
     playerList = document.getElementById("player-names");
     let newplayer = document.createElement("p");
     console.log(data);
-    newplayer.textContent = "test";
+    newplayer.textContent = "user"+data.clientCount;
+    playerList.appendChild(newplayer);
+});
+
+//Listens for a player join event and adds the new player to the player list
+socket.on('player_left', function (data) {
+    playerList = document.getElementById("player-names");
+    let newplayer = document.createElement("p");
+    console.log(data);
+    newplayer.textContent = "user";
     playerList.appendChild(newplayer);
 });
 
 // document.getElementById("login-btn").addEventListener('click', ()=> {
 //     username = document.getElementById("")
 //     socket.emit('connect', data);
+// });
+// document.getElementById("login-btn").addEventListener('click', () => {
+//     userName = document.getElementById("login-input").value
+//     console.log(userName)
+//     if(userName === ""){
+//         alert("please enter a different username")
+//     }
+//     socket.emit('join', {"userName": userName});
 // });
