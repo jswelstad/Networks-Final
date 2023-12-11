@@ -9,22 +9,14 @@
 </head>
 <body>
     <h1>Pictionary</h1>
-    
-    <div id="top-content">
-      <div id="clock"></div> 
-      <div id="blank-word"></div>
-      <div id="round"></div>
-    </div>
-
-    <div id="game-wrapper">
-        <div id="player-names"></div>
-    <canvas id="drawing-canvas" width="800" height="400"></canvas>
-    <div id="chat-box">
-        <div id="player-guesses"></div>
-        <input type="text">
-    </div>
-    </div>
-    
     <script src="{{ url_for('static', filename='script.js') }}"></script>\
+
+    <form action="{{ url_for('search') }}" method="post">
+        <input type="text" name="searchInput" placeholder="Enter A Genre" class="search-field">
+        <button type="submit" class="search-button" name="search_type" value="movie_search">
+            <img src="{{url_for('static', filename='search.webp')}}" alt="search button">
+        </button>
+    </form>
+
 </body>
 </html>

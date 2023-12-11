@@ -2,7 +2,7 @@
 Client side rendering and networking of the game
 */
 
-const socket = io("http://localhost:5555/")
+const socket = io("http://127.0.0.1:5555/")
 // Get the canvas element and its context
 let canvas = document.getElementById('drawing-canvas');
 let ctx = canvas.getContext('2d');
@@ -69,7 +69,7 @@ socket.on('player_joined', function (data) {
     playerList.appendChild(newplayer);
 });
 
-// document.getElementById("login-btn").addEventListener('click', ()=> {
-//     username = document.getElementById("")
-//     socket.emit('connect', data);
-// });
+document.getElementById("login-btn").addEventListener('click', ()=> {
+    username = document.getElementById("")
+    socket.emit('connect', data);
+});
