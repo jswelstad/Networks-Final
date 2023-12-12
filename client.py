@@ -2,6 +2,7 @@ import pygame
 import socket
 import select
 import errno
+import threading
 from pygame.locals import *
 
 BLACK = (0, 0, 0)
@@ -21,6 +22,23 @@ MESSAGE_LEN = 10
 HOST = "127.0.0.1" #Standard loopback interface address (localhost)
 PORT = 5235
 
+def receive_messages(sock, stop_event):
+    while not stop_event.is_set():
+        try:
+            data = sock.recv(1024)
+            if not data:
+                break
+
+            message = data.decode('utf-8')
+            print(f"Received: {message}\n")
+
+            if message.lower() == 'close':
+                print("Received 'close' message. Closing connection.")
+                break
+        except ConnectionResetError:
+            print("Connection to server closed.")
+            break
+
 def main():
     
     # game()
@@ -29,19 +47,36 @@ def main():
     
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect((HOST, PORT))
-    s.setblocking(False)
+    print(f"Connected to {HOST}:{PORT}")
+    #s.setblocking(False)
 
     username = input("Please enter your username\n")
-    s.sendall(username.encode())
-    print("Enter your message")
+    s.sendall(username.encode('utf-8'))
+    
+    stop_event = threading.Event()
+    receive_thread = threading.Thread(target=receive_messages, args=(s, stop_event))
+    receive_thread.start()
 
     while(keepRunning):
+        print("Enter your message: ")
         message = input()
-        s.sendall(message.encode())
-        if(message == "quit"):
+        s.sendall(message.encode('utf-8'))
+        if(message == "close"):
             keepRunning = False
-        # message = s.recv(1024).decode()
-        print("Client received:", message)
+        #message = s.recv(1024).decode('utf-8')
+        #print("Client received:", message)
+
+    # Send a 'close' message to the server before stopping the thread
+    s.send('close'.encode('utf-8'))
+
+    # Set the event to signal the receive thread to stop
+    stop_event.set()
+
+    # Wait for the receive thread to finish
+    receive_thread.join()
+
+    # Close the socket
+    s.close()
 
 def game():
     SCREEN_WIDTH = 1000

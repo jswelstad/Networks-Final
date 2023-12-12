@@ -15,11 +15,8 @@ def main() -> None:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s: #IPV4 and TCP
 
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)         #Allows us to reuse the socket when it doesn't close properly
-
         s.bind((SERVER, PORT))
-
         print("Binding complete")
-
         print("Listening for connection")
         s.listen()
             
@@ -32,16 +29,18 @@ def main() -> None:
             for notifiedSocket in read_sockets:
                 if(notifiedSocket == s):        #If the notified socket is the server socket, we have an incoming connection
                     client_socket, client_address = s.accept()    #Accept the connection
-                    print(f"Accepted new connection from: {client_address}")
+                    print(f"Accepted new connection from: {client_address}\n")
                     socket_list.append(client_socket)   #Append new client socket to list of sockets
-                    username = client_socket.recv(1024).decode()
-                    print(f"New connecions username is: {username}")
+                    username = client_socket.recv(1024).decode('utf-8')
+                    print(f"New connecions username is: {username}\n")
                     clients[client_socket] = username
                 else:                     #That means the notified socket is not the server socket so it is an existing client
-                    data = notifiedSocket.recv(1024).decode()
-                    print("Received: ", data)
-                    notifiedSocket.sendall(data.encode())
-                    if(data == "quit"):
+                    data = notifiedSocket.recv(1024).decode('utf-8')
+                    print(f"Received: {data}\n")
+                    
+                    for key, values
+
+                    if(data == "close"):
                         s.close()
                         keepRunning = False
                         break
