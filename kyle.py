@@ -17,6 +17,8 @@ def startTimer():
         print("The Timer Is Working")
         continue 
 
+class Player:
+
 class Game: #my vision is that the Game class will be used on the server side to handle game logic.
     def __init__(self, roundTime, maxPlayers, maxRounds, fileName):
         self.maxGameTime = roundTime
@@ -24,7 +26,7 @@ class Game: #my vision is that the Game class will be used on the server side to
         self.maxRounds = maxRounds
         self.roundCount = 0
         self.startingTime
-        self.isFinished =  False
+        self.gameFinished =  False
         self.gameStarted = False
         self.playerSet = []
         self.wordSet = []
@@ -34,20 +36,28 @@ class Game: #my vision is that the Game class will be used on the server side to
         self.playerSet.insert(playerName)
 
     def deletePlayer(self, playerName):
-        if (self.playerCount < 1):
+        if (len(self.playerSet) < 1):
             print("No players to delete")
         elif playerName in self.playerSet:
             self.playerSet.remove(playerName)
+            if (len(self.playerSet) <= 1 and self.gameStarted == True):\
+                print("Not enough players to continue the game.")
+                self.gameFinished == True
         else:
             print(f"{playerName} not found in database.")
-        
+    
+    def startGame(self):
+        if (len(self.playerSet) <= 1 or self.gameStarted == True):
+            print("Unable to start game because either there aren't at least 2 players or there is already a game going.")
+            return
+        else:
+            self.gameStarted = True
     
     def startRound(self):
         if (self.roundCount >= self.maxRounds):
-            self.isFinished = True
+            self.gameFinished = True
             return
         self.roundCount += 1
-        gameStarted = True
         self.startingTime = time.time()
 
     def getTimeRemaining(self):
@@ -59,11 +69,11 @@ class Game: #my vision is that the Game class will be used on the server side to
     
     def resetGame(self):
         self.roundCount = 0
-        self.isFinished = False
+        self.gameFinished = False
         self.gameStarted = False
 
     def randomWordGenerator(self):
-        randomNumber = random.randrange(0, self.wordSet.count())
+        randomNumber = random.randrange(0, len(self.wordSet))
         return self.wordSet[randomNumber]
     
     def loadWordSet(self, fileName):
