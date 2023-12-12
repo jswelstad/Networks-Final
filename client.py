@@ -19,29 +19,35 @@ BACKGROUNDCOLOR = CYAN
 BUFF_SIZE = 1024
 MESSAGE_LEN = 10
 HOST = "127.0.0.1" #Standard loopback interface address (localhost)
-PORT = 5235
+PORT = 5239
 
 def main():
     
     # game()
     
     keepRunning = True
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((HOST, PORT))
+
+        username = input("Please enter your username\n")
+        s.sendall(username.encode())
+        print("Enter your message")
+
+        while keepRunning:
+            message = input()
+            s.sendall(message.encode())
+
+            if message == "quit":
+                keepRunning = False
+                s.close()
+                break
+
+            data = s.recv(1024).decode()
+            print(f"Received from server: {data}")
+
+    print("Client shutting down")            
     
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((HOST, PORT))
-    s.setblocking(False)
-
-    username = input("Please enter your username\n")
-    s.sendall(username.encode())
-    print("Enter your message")
-
-    while(keepRunning):
-        message = input()
-        s.sendall(message.encode())
-        if(message == "quit"):
-            keepRunning = False
-        # message = s.recv(1024).decode()
-        print("Client received:", message)
 
 def game():
     SCREEN_WIDTH = 1000
