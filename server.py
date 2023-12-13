@@ -10,8 +10,7 @@ BUFF_SIZE = 10
 HEADER_LENGTH = 10
 
 def main():
-    game = Game(30, 10, 3, words.txt)
-    NUMCLIENTS = 0
+    game = Game(30, 10, 3, 'words.txt')
     host = "127.0.0.1"
     port = 1239
 
@@ -32,7 +31,7 @@ def main():
                     socket_list.append(conn)
                     username = conn.recv(4096)
                     print(f"{username} just joined")
-                    clients[conn] = username.decode()
+                    player = Player(username, conn)
                     NUMCLIENTS += 1
                     if NUMCLIENTS == 1:
                         conn.sendall("1".encode())

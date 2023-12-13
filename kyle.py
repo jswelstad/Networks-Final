@@ -18,7 +18,7 @@ def startTimer():
         continue 
 
 class Player:
-    def __init__(self, name, socket, points):
+    def __init__(self, name, socket):
         self.username = name
         self.socket = socket
         self.points = 0
