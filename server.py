@@ -31,9 +31,9 @@ def main():
                     socket_list.append(conn)
                     username = conn.recv(4096)
                     print(f"{username} just joined")
-                    player = Player(username, conn)
-                    NUMCLIENTS += 1
-                    if NUMCLIENTS == 1:
+                    player = Player(username)
+                    game.addPlayer(conn, player)
+                    if game.getPlayerCount() == 1:
                         conn.sendall("1".encode())
                     else:
                         conn.sendall("-1".encode())

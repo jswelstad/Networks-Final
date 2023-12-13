@@ -18,9 +18,8 @@ def startTimer():
         continue 
 
 class Player:
-    def __init__(self, name, socket):
+    def __init__(self, name):
         self.username = name
-        self.socket = socket
         self.points = 0
 
 class Game: #my vision is that the Game class will be used on the server side to handle game logic.
@@ -32,18 +31,18 @@ class Game: #my vision is that the Game class will be used on the server side to
         self.timer 
         self.gameFinished = False
         self.gameStarted = False
-        self.playerList = []
+        self.playerDictionary = {}
         self.wordList = []
         loadWordList(fileName)
 
-    def addPlayer(self, player):
-        self.playerList.insert(player)
+    def addPlayer(self, key, player):
+        self.playerDictionary[key] = player 
 
     def deletePlayer(self, playerName):
-        if (len(self.playerList) < 1):
+        if (len(self.playerDictionary) < 1):
             print("No players to delete")
-        elif playerName in self.playerList:
-            self.playerList.remove(playerName)
+        elif key in self.playerDictionary:
+            self.playerDictionary[key].remove(playerName)
             if (len(self.playerList) <= 1 and self.gameStarted == True):
                 print("Not enough players to continue the game.")
                 self.gameFinished == True
@@ -83,3 +82,6 @@ class Game: #my vision is that the Game class will be used on the server side to
     def loadwordList(self, fileName):
         with open(fileName, 'r') as file:
             self.wordList = file.readlines()
+    
+    def getPlayerCount(self):
+        return len(self.playerDictionary)
