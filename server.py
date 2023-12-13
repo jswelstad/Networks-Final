@@ -37,7 +37,6 @@ def main():
                         conn.sendall("-1".encode())
                 else:                    
                     serial_data = notified_socket.recv(4096)
-                    
                     # print(f"Sending pickled data to {clients[conn]}")
                     for key, value in clients.items():
                         if key != notified_socket:

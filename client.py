@@ -4,6 +4,7 @@ import select
 import errno
 import pickle
 from pygame.locals import *
+import threading
 
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
@@ -23,6 +24,12 @@ HOST = "127.0.0.1" #Standard loopback interface address (localhost)
 
 BUFF_SIZE = 1024
 MESSAGE_LEN = 10
+
+def guess(s, stop_event):
+    while not stop_event.is_set():
+        message = input("Enter guess")
+        print(message)
+        #s.sendall(message.encode())
 
 
 def main():
@@ -96,6 +103,10 @@ def game():
 
         else:
             
+            stop_event = threading.Event()
+            guess_thread = threading.Thread(target=guess, args=(s, stop_event))
+            guess_thread.start()
+            
             while keepRunning:
                 for event in pygame.event.get():
                     # print(f"PYGAME EVENT IS: {event}")
@@ -110,13 +121,17 @@ def game():
                 print("RECIEVING DRAWING DATA FROM SERVER")
                 received_data = s.recv(4096)
                 drawingSegments = pickle.loads(received_data)
+                
+                #thing = input("enter your guess")
 
                 for segment in drawingSegments:
                     if len(segment) > 1:
                         pygame.draw.lines(screen, LINECOLOR, False, segment, 5)
                 pygame.display.update()
             
-        
+            stop_event.set()
+            guess_thread.join()
+            
         pygame.quit()
 
         s.close()
