@@ -2,6 +2,7 @@ import pygame
 import socket
 import select
 import errno
+import pickle
 from pygame.locals import *
 
 BLACK = (0, 0, 0)
@@ -19,79 +20,106 @@ BACKGROUNDCOLOR = CYAN
 BUFF_SIZE = 1024
 MESSAGE_LEN = 10
 HOST = "127.0.0.1" #Standard loopback interface address (localhost)
-PORT = 5239
+
+BUFF_SIZE = 1024
+MESSAGE_LEN = 10
+
 
 def main():
-    
-    # game()
-    
-    keepRunning = True
-
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect((HOST, PORT))
-
-        username = input("Please enter your username\n")
-        s.sendall(username.encode())
-        print("Enter your message")
-
-        while keepRunning:
-            message = input()
-            s.sendall(message.encode())
-
-            if message == "quit":
-                keepRunning = False
-                s.close()
-                break
-
-            data = s.recv(1024).decode()
-            print(f"Received from server: {data}")
-
-    print("Client shutting down")            
-    
+    game()
+        
 
 def game():
-    SCREEN_WIDTH = 1000
-    SCREEN_HEIGHT = 800
-    keepRunning = True
+    host = "127.0.0.1"
+    port = 1239
+    drawer = False
 
-    drawing = False
-    points = []
-    drawingSegments = []
-    running = True
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((host, port))
 
-    # Create the game screen        
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        SCREEN_WIDTH = 1000
+        SCREEN_HEIGHT = 800
+        keepRunning = True
 
-    pygame.display.set_caption("Drawing Example")
+        drawing = False
+        points = []
+        drawingSegments = []
 
-    while keepRunning:
-        for event in pygame.event.get():
-            if (event.type == pygame.QUIT):   
-                keepRunning = False
-            elif (event.type == KEYDOWN and event.key == K_ESCAPE):
-                keepRunning = False
-            elif (event.type == MOUSEBUTTONDOWN):             #Initiate drawing and have it follow the mouse
-                points.append(event.pos)
-                drawing = True
-            elif (event.type == MOUSEBUTTONUP and drawing):     #Terminate drawing
-                drawing = False
-                drawingSegments.append(points)                  #Save the drawn segments
-                points = []                                     #Clear the points array so it doesn't pick up unwanted points
-            elif (event.type == MOUSEMOTION and drawing):         #While drawing is active, record the points
-                points.append(event.pos)
+        username = input("Please enter your username: ")
 
+        s.sendall(username.encode())
+        
+        variable = s.recv(4096).decode()
+        
+        # Create the game screen
+        screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         screen.fill(BACKGROUNDCOLOR)
+        pygame.display.set_caption("Drawing Example")
+        print("SETUP PYGAME WINDOW")
 
-        if len(points) > 1:                                    #Display points as they are recorded so you can see where you are drawing
-            pygame.draw.lines(screen, LINECOLOR, False, points, 5)
+        if variable == "1":
+            drawer = True
+        else:
+            drawer = False
+            
+        if drawer:
 
-        for segment in drawingSegments:                         #Display all points permanently 
-            if len(segment) > 1:
-                pygame.draw.lines(screen, LINECOLOR, False, segment, 5)
-        pygame.display.update()
+            while keepRunning:
+                for event in pygame.event.get():
+                    # print(f"PYGAME EVENT IS: {event}")
+                    if event.type == pygame.QUIT:
+                        keepRunning = False
+                    elif event.type == KEYDOWN and event.key == K_ESCAPE:
+                        keepRunning = False
+                    elif event.type == MOUSEBUTTONDOWN:
+                        points.append(event.pos)
+                        drawing = True
+                        print("THE USER STARTED DRAWING")
+                    elif event.type == MOUSEBUTTONUP and drawing:
+                        print("THE USER STOPPED DRAWING")
+                        drawing = False
+                        drawingSegments.append(points)
+                        serialized_points = pickle.dumps(drawingSegments)
+                        s.sendall(serialized_points)
+                        points = []
+                    elif event.type == MOUSEMOTION and drawing:
+                        print("THE USER IS DRAWING")
+                        points.append(event.pos)
 
-    pygame.quit()
-    
-    
+                if len(points) > 1:
+                    pygame.draw.lines(screen, LINECOLOR, False, points, 5)
+
+                for segment in drawingSegments:
+                    if len(segment) > 1:
+                        pygame.draw.lines(screen, LINECOLOR, False, segment, 5)
+                pygame.display.update()
+
+        else:
+            
+            while keepRunning:
+                for event in pygame.event.get():
+                    # print(f"PYGAME EVENT IS: {event}")
+                    if event.type == pygame.QUIT:
+                        keepRunning = False
+                    elif event.type == KEYDOWN and event.key == K_ESCAPE:
+                        keepRunning = False
+
+                if len(points) > 1:
+                    pygame.draw.lines(screen, LINECOLOR, False, points, 5)
+
+                print("RECIEVING DRAWING DATA FROM SERVER")
+                received_data = s.recv(4096)
+                drawingSegments = pickle.loads(received_data)
+
+                for segment in drawingSegments:
+                    if len(segment) > 1:
+                        pygame.draw.lines(screen, LINECOLOR, False, segment, 5)
+                pygame.display.update()
+            
+        
+        pygame.quit()
+
+        s.close()
+
 if __name__ == "__main__":
     main()
