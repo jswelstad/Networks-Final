@@ -64,13 +64,8 @@ class Game: #my vision is that the Game class will be used on the server side to
             return
         self.roundCount += 1 
         #need to assign a drawer
-        randNum = random.randrange(1, self.getPlayerCount() - 1) #chooses a random number between 0 and the number of players
-        counter = 1
-        for key in self.playerDictionary:
-            if (counter == randNum):
-                (self.playerDictionary[key]).drawer = True
-            counter+=1
-        self.timer = time.time() #each round will have a new timer
+
+        self.assignDrawer()
 
     def getTimeRemaining(self):
         if (self.gameStarted):
@@ -107,4 +102,14 @@ class Game: #my vision is that the Game class will be used on the server side to
                     if (self.playerDictionary[key1]).drawer == True:
                         (self.playerDictionary[key1]).points += (earnedPoints/self.getPlayerCount())
 
+    def assignDrawer(self):
+        randNum = random.randrange(1, self.getPlayerCount() - 1) #chooses a random number between 0 and the number of players
+        counter = 1
+        for key in self.playerDictionary:
+            if (counter == randNum):
+                if ((self.playerDictionary[key]).username == 'host'):
+                    self.assignDrawer() #recursive call if the host is accidentally selected to be drawer
+                else:
+                    (self.playerDictionary[key]).drawer = True
+            counter+=1
         
