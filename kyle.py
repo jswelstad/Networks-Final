@@ -21,6 +21,7 @@ class Player:
     def __init__(self, name): #Player class will just consist of username and points
         self.username = name
         self.points = 0
+        self.drawer = False
 
 class Game: #my vision is that the Game class will be used on the server side to handle game logic.
     def __init__(self, roundTime, maxPlayers, maxRounds, fileName):
@@ -62,6 +63,13 @@ class Game: #my vision is that the Game class will be used on the server side to
             self.gameFinished = True
             return
         self.roundCount += 1 
+        #need to assign a drawer
+        randNum = random.randrange(1, self.getPlayerCount() - 1) #chooses a random number between 0 and the number of players
+        counter = 1
+        for key in self.playerDictionary:
+            if (counter == randNum):
+                (self.playerDictionary[key]).drawer = True
+            counter+=1
         self.timer = time.time() #each round will have a new timer
 
     def getTimeRemaining(self):
@@ -80,6 +88,7 @@ class Game: #my vision is that the Game class will be used on the server side to
         self.gameStarted = False
         for key in self.playerDictionary:
             (self.playerDictionary[key]).points = 0 #resets all teh players points to zero
+            (self.playerDictionary[key]).drawer = False #clears the drawers flag
 
     def randomWordGenerator(self):
         randomNumber = random.randrange(0, len(self.wordList))
@@ -94,4 +103,8 @@ class Game: #my vision is that the Game class will be used on the server side to
         for key in self.playerDictionary:
             if (self.playerDictionary[key]).username == player:
                 (self.playerDictionary[key]).points += earnedPoints
+                for key1 in self.playerDictionary:
+                    if (self.playerDictionary[key1]).drawer == True:
+                        (self.playerDictionary[key1]).points += (earnedPoints/self.getPlayerCount())
+
         
