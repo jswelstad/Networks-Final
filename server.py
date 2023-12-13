@@ -2,12 +2,15 @@ import socket
 import select
 from _thread import *
 import sys
+from kyle import Game
+from kyle import Player
 
 SERVER = "127.0.0.1" #Standard loopback interface address (localhost)
 BUFF_SIZE = 10
 HEADER_LENGTH = 10
 
 def main():
+    game = Game(30, 10, 3, words.txt)
     NUMCLIENTS = 0
     host = "127.0.0.1"
     port = 1239
